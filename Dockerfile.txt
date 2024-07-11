@@ -1,0 +1,20 @@
+# Usar imagem basica da AWS para Python 3.12
+FROM public.ecr.aws/lambda/python:3.12
+
+# Instalar o compilador e ferramentas essenciais da build
+RUN microdnf update -y && microdnf install -y gcc-c++ make
+
+# Copiar o requirements.tsx
+COPY requirements.txt ${LAMBDA_TASK_ROOT}
+
+# Instalar os pacotes das libs
+RUN pip install -r requirements.txt
+
+# Copiar o código de função
+COPY travelAgent.py ${LAMBDA_TASK_ROOT}
+
+# Define as permissões para tornar o arquivo executável
+RUN chmod +x travelAgent.py
+
+# Definir o CMD como handler
+CMD ["travelAgent.lambda_handler"]
